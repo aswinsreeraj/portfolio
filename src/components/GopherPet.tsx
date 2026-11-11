@@ -1,39 +1,105 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const GOPHER_MESSAGES = [
-  // Friendly Greetings to the Visitor
-  "Hey there! Welcome to Aswin's portfolio! 👋",
-  "Great to meet you! Having a wonderful day? ✨",
-  "Welcome! Make yourself at home and explore the code! 🌈",
-  "Looking for a skilled Go backend engineer? You're in the right place! 🐹",
-  "Hi! Click 'Chat with Aswin' above to ask anything in real time! 💬",
-  "Thanks for dropping by! Hope you enjoy the projects! 🚀",
+const PROFILE_QUIPS = [
+  // NatWest & Amazon origin story turned backend superpower
+  "Aswin investigated bank fraud for 3 years at NatWest—that's why his APIs trust nobody, not even HTTP headers.",
+  "Most devs use floats for money and pray. 3 years of NatWest ledger audits cured Aswin of that permanently.",
+  "Amazon compliance taught Aswin to read the fine print. Now ARDA forces AI agents to follow it too.",
+  "He strips client X-Tenant-ID headers right at the gateway door. Zero trust, maximum NatWest fraud-analyst instincts.",
 
-  // Peeking Greetings
-  "Peek-a-boo! You found me! 👀",
-  "Hehe! Just checking on your browsing experience! 🐹",
-  "Psst! Did you explore Aswin's ARDA and EVNTX projects? ✨",
+  // Hardware & Canada plot twist
+  "Started on tiny PIC microcontrollers in Embedded C, survived Canadian winters (4.04 GPA!), now wrangles Go goroutines.",
+  "Embedded C traumatized Aswin into respecting every byte—good news for your backend memory bill.",
+  "Delhi → Chennai → Bangalore → London (Canada) → Kerala. Relocation? Pretty sure his suitcase stays half-packed.",
+  "Four Honour Rolls at Fanshawe College and still humble enough to document what went wrong in every README.",
 
-  // Awesome Highlights About Aswin
-  "Aswin won Overall Best Performer for June 2026 at Brototype! 🏆",
-  "In EVNTX, Aswin built optimistic CAS ticketing & FOR UPDATE escrow wallets! ⚡",
-  "In ARDA, Aswin combined Temporal durable workflows with pgvector HNSW! 🤖",
-  "In Tenome Micro, Aswin wired OpenTelemetry traces across Gin, gRPC, Kafka & Ollama! 🏎️",
-  "Aswin graduated Fanshawe College on the Dean's Honour Roll (GPA 4.04/4.2)! 🎓",
-  "Aswin's 3 rules: Design before coding, Instrument day one, Test failure paths! 🛠️",
-  "Aswin has solved over 300+ LeetCode algorithmic challenges in Go! 💡",
-  "When not writing Go backends, Aswin dives into distributed systems papers! 📚⚡",
-  "Aswin is actively exploring backend & distributed systems opportunities! 💼",
-
-  // Happy Vibe & Positive Code Messages
-  "May your code compile clean and your tests pass on the first try! ✨",
-  "Sending 100% positive goroutine energy your way! 🚀",
-  "Zero memory leaks, zero deadlocks, pure high vibes today! 🎯",
-  "May your coffee be hot and your P99 latency be sub-millisecond! ☕⚡",
-  "Keep smiling and go build something legendary! 🌟",
-  "Clean Architecture + positive vibes = unbeatable engineering! 💛",
-  "You're doing great! Don't forget to hydrate and commit your changes! 💧",
+  // Coding style & personality
+  "Aswin codes in Neovim. Don't ask him how to exit Vim—he's been happily living inside it since last year.",
+  "Won Overall Best Performer at Brototype (June 2026). As his mascot, I'm taking at least 12% of the credit.",
+  "Fun fact: Aswin merged upstream Go PRs into CNCF's ORAS (oras-go). Yes, I frame that on my burrow wall.",
+  "Aswin's 3 rules: design before coding, instrument day one, and test failure paths before they page you at 3 AM.",
+  "Does NOT slap fake 'Live Demo' buttons on unfinished apps. Refreshingly honest engineering ahead!",
+  "Open to remote work OR relocation—plus hiring Aswin automatically includes one well-behaved Go Gopher.",
+  "Double-click anywhere if you want to toss me a snack. Go concurrency runs at peak throughput on peanuts! 🥜",
+  "Psst—try asking the AI assistant above tough architecture questions. It refuses to hallucinate outside his docs!",
 ];
+
+const ROUTE_QUIPS: { prefix: string; quips: string[] }[] = [
+  {
+    prefix: '/projects/arda',
+    quips: [
+      "ARDA is basically TSA for AI agents: 10-step ToolGateway checks before any tool gets near production.",
+      "272 Go tests & 219 Python tests in ARDA—and his Human Review UI is still politely sitting in Pending.",
+      "Caught a sneaky pgvector HNSW bug returning 0 rows on tenant filters. The vectors tried hiding; he found them.",
+      "Trust issues check: ARDA locks published agents with a SQL trigger AND stashes BYOK keys in Vault.",
+    ],
+  },
+  {
+    prefix: '/projects/evntx',
+    quips: [
+      "Two fans clicking the last concert seat at the exact same millisecond? EVNTX keeps calm with optimistic CAS.",
+      "If your Razorpay payment lands 1 second after EVNTX's 1-minute hold expires, it auto-refunds you. True manners.",
+      "Skipped Redis just for a 60s event cache and used a crisp sync.RWMutex instead. Peak pragmatic Go.",
+      "EVNTX encrypts organizer bank & UPI payouts with AES-256-GCM so nobody leaks sensitive details.",
+    ],
+  },
+  {
+    prefix: '/projects/tenome',
+    quips: [
+      "Tried running a 14B LLM on Minikube, watched RAM hit 100%, and gracefully downsized to qwen2.5:0.5b.",
+      "Four separate Go modules wired over gRPC & Kafka just to crawl sites and summarize them locally for $0.",
+      "Poisoned Kafka message incoming? tenome-notify parks it cleanly in a Dead Letter Topic and keeps humming.",
+    ],
+  },
+  {
+    prefix: '/skills',
+    quips: [
+      "Decluttered these skill cards on purpose—less chest-thumping prose, more clean scanning for busy engineers.",
+      "Click any skill card! No walls of marketing fluff—just what Aswin actually built with it.",
+    ],
+  },
+  {
+    prefix: '/about',
+    quips: [
+      "NatWest fraud audits → Amazon SOPs → Canadian Embedded C → Go distributed systems. Now THAT'S a character arc.",
+      "Look at that timeline: every career turn somehow made him even more paranoid about correctness & edge cases.",
+    ],
+  },
+  {
+    prefix: '/contact',
+    quips: [
+      "Notice there's no mandatory phone trap or 12-step form here—just one clean click straight to his inbox.",
+      "Writing to aswinsreeraj96@gmail.com? Mention Go concurrency or payment edge cases for instant bonus points.",
+    ],
+  },
+];
+
+const WAKE_QUIPS = [
+  "Who pinged /health?! I was right in the middle of a peaceful power nap!",
+  "Back online! 99.9% uptime—well, minus that cozy 10-second sleep.",
+  "Alert acknowledged! Ready for goroutines (and maybe a peanut).",
+];
+
+const DROP_QUIPS = [
+  "Whew—circuit-breaker held mid-air! 10/10 graceful landing.",
+  "Zero dropped frames, slight panic in my whiskers!",
+  "Note to self: goroutines schedule faster than falling Gophers.",
+];
+
+function pickPersonalizedQuip(pathname: string, lastQuip: string | null): string {
+  const matched = ROUTE_QUIPS.find((r) => pathname.startsWith(r.prefix));
+  const pool =
+    matched && Math.random() < 0.55
+      ? matched.quips
+      : matched
+      ? [...matched.quips, ...PROFILE_QUIPS]
+      : PROFILE_QUIPS;
+
+  const candidates = pool.filter((q) => q !== lastQuip);
+  const source = candidates.length > 0 ? candidates : PROFILE_QUIPS;
+  return source[Math.floor(Math.random() * source.length)];
+}
 
 const SNACK_EMOJIS = ['🥜', '🧀', '🥕', '🍪', '🍓', '🍰', '🍕', '🍉', '🥑', '🍩'];
 
@@ -51,7 +117,8 @@ interface GopherPetProps {
   onOpenAskModal?: (query?: string) => void;
 }
 
-export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
+export const GopherPet: React.FC<GopherPetProps> = () => {
+  const { pathname } = useLocation();
   // Positioning & movement state (compact half-size)
   const [posX, setPosX] = useState<number>(84); // percentage across viewport (sits peacefully near corner)
   const [direction, setDirection] = useState<1 | -1>(-1); // facing inward toward the page
@@ -124,6 +191,7 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const inactivityTimerRef = useRef<number | null>(null);
   const speechTimerRef = useRef<number | null>(null);
+  const lastQuipRef = useRef<string | null>(null);
   const waddleTimerRef = useRef<number | null>(null);
   const blinkTimerRef = useRef<number | null>(null);
   const peekTimerRef = useRef<number | null>(null);
@@ -167,6 +235,17 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
     }, 35000); // 35 seconds of inactivity -> peaceful nap
   }, [isSleeping]);
 
+  const sayMessage = useCallback((text: string, durationMs = 5000) => {
+    lastQuipRef.current = text;
+    setSpeechText(text);
+    if (speechTimerRef.current) {
+      window.clearTimeout(speechTimerRef.current);
+    }
+    speechTimerRef.current = window.setTimeout(() => {
+      setSpeechText(null);
+    }, durationMs);
+  }, []);
+
   // Safe trigger click for quick clicks (jump + speech bubble)
   const safeTriggerClick = useCallback(() => {
     const now = Date.now();
@@ -177,6 +256,8 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
 
     if (isSleepingRef.current) {
       setIsSleeping(false);
+      const wakeLine = WAKE_QUIPS[Math.floor(Math.random() * WAKE_QUIPS.length)];
+      sayMessage(wakeLine, 3800);
       return;
     }
 
@@ -193,17 +274,9 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
     setIsJumping(true);
     setTimeout(() => setIsJumping(false), 450);
 
-    // Pick a random message
-    const randomMessage = GOPHER_MESSAGES[Math.floor(Math.random() * GOPHER_MESSAGES.length)];
-    setSpeechText(randomMessage);
-
-    if (speechTimerRef.current) {
-      window.clearTimeout(speechTimerRef.current);
-    }
-    speechTimerRef.current = window.setTimeout(() => {
-      setSpeechText(null);
-    }, 3000);
-  }, [resetInactivity]);
+    // Pick a personalized witty quip (route-aware + non-repeating)
+    sayMessage(pickPersonalizedQuip(pathname, lastQuipRef.current), 5200);
+  }, [pathname, resetInactivity, sayMessage]);
 
   // Execute drop physics with gravity acceleration down to baseline
   const executeDrop = useCallback(() => {
@@ -254,12 +327,16 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
       setDropAnimating(false);
       setPosX(newVw);
       setIsLanding(true);
+      if (currentBottom > 120) {
+        const dropLine = DROP_QUIPS[Math.floor(Math.random() * DROP_QUIPS.length)];
+        sayMessage(dropLine, 3400);
+      }
       setTimeout(() => {
         setIsLanding(false);
         hasDraggedRef.current = false;
       }, 400);
     }, fallMs + 30);
-  }, []);
+  }, [sayMessage]);
 
   const handleGopherMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return; // Only primary mouse button
@@ -936,16 +1013,20 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
           </div>
         )}
 
-        {/* Speech Bubble (Proportionally Scaled) */}
+        {/* Speech Bubble (Cleanly Anchored Above Ears & Clamped Near Edges) */}
         {speechText && !isSleeping && !isPickedUp && !isDropping && (
           <div
             role="status"
             aria-live="polite"
-            className={`absolute -top-18 sm:-top-20 w-48 sm:w-56 p-2 bg-white dark:bg-[#0E1F27] text-[#101820] dark:text-[#E6F4F8] border border-[#101820] dark:border-[#00ADD8] rounded-xl shadow-lg pointer-events-auto text-[11px] font-semibold text-center z-50 animate-in fade-in zoom-in-90 duration-150 leading-snug ${
+            className={`absolute bottom-full mb-2.5 w-56 sm:w-64 max-w-[calc(100vw-24px)] px-3 py-2 bg-white dark:bg-[#0E1F27] text-[#101820] dark:text-[#E6F4F8] border border-[#101820] dark:border-[#00ADD8] rounded-xl shadow-lg pointer-events-auto text-[11.5px] font-medium text-center z-50 animate-in fade-in zoom-in-90 duration-150 leading-snug ${
               isPeeking === 'left'
                 ? 'left-4 sm:left-6'
                 : isPeeking === 'right'
-                ? '-left-44 sm:-left-52'
+                ? 'right-10 sm:right-12'
+                : posX > 76
+                ? 'right-0'
+                : posX < 24
+                ? 'left-0'
                 : 'left-1/2 -translate-x-1/2'
             }`}
           >
@@ -957,6 +1038,10 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
                   ? 'left-5 sm:left-7'
                   : isPeeking === 'right'
                   ? 'right-5 sm:right-7'
+                  : posX > 76
+                  ? 'right-6'
+                  : posX < 24
+                  ? 'left-6'
                   : 'left-1/2 -translate-x-1/2'
               }`}
             />
@@ -966,6 +1051,10 @@ export const GopherPet: React.FC<GopherPetProps> = ({ onOpenAskModal }) => {
                   ? 'left-5 sm:left-7'
                   : isPeeking === 'right'
                   ? 'right-5 sm:right-7'
+                  : posX > 76
+                  ? 'right-6'
+                  : posX < 24
+                  ? 'left-6'
                   : 'left-1/2 -translate-x-1/2'
               }`}
             />
