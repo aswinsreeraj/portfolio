@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProjectData } from '../data/projects';
 
@@ -8,8 +8,32 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    const video = videoRef.current;
+    if (video) {
+      video.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  };
+
   return (
-    <article className="flex-1 min-w-[320px] max-w-full flex flex-col bg-white dark:bg-[#0E1F27] border border-[#C9DCE4] dark:border-[#1E3A47] rounded-[14px] overflow-hidden transition-all hover:border-[#00ADD8] dark:hover:border-[#00ADD8]">
+    <article
+      onMouseEnter={project.videoUrl ? handleMouseEnter : undefined}
+      onMouseLeave={project.videoUrl ? handleMouseLeave : undefined}
+      className="flex-1 min-w-[320px] max-w-full flex flex-col bg-white dark:bg-[#0E1F27] border border-[#C9DCE4] dark:border-[#1E3A47] rounded-[14px] overflow-hidden transition-all hover:border-[#00ADD8] dark:hover:border-[#00ADD8]"
+    >
       {/* Project Media Box */}
       <Link
         to={`/projects/${project.id}`}
@@ -20,9 +44,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech 
       >
         {project.videoUrl ? (
           <video
+            ref={videoRef}
             src={project.videoUrl}
             aria-label={`${project.name} animated project overview`}
-            autoPlay
             loop
             muted
             playsInline
@@ -59,8 +83,17 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech 
           <span className="truncate">{project.screenshotLabel}</span>
           {project.videoUrl && (
             <span className="inline-flex items-center gap-1.5 flex-shrink-0 text-[#00708C] dark:text-[#00ADD8]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00ADD8]" />
-              demo
+              {isHovered ? (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00ADD8] animate-pulse" />
+                  playing
+                </>
+              ) : (
+                <>
+                  <span aria-hidden="true">▶</span>
+                  hover
+                </>
+              )}
             </span>
           )}
         </div>
