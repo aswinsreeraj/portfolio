@@ -1,100 +1,112 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Easy, witty, non-technical quips anyone can enjoy (~75-80% chance)
 const PROFILE_QUIPS = [
-  // NatWest & Amazon origin story turned backend superpower
-  "Aswin investigated bank fraud for 3 years at NatWest—that's why his APIs trust nobody, not even HTTP headers.",
-  "Most devs use floats for money and pray. 3 years of NatWest ledger audits cured Aswin of that permanently.",
-  "Amazon compliance taught Aswin to read the fine print. Now ARDA forces AI agents to follow it too.",
-  "He strips client X-Tenant-ID headers right at the gateway door. Zero trust, maximum NatWest fraud-analyst instincts.",
-
-  // Hardware & Canada plot twist
-  "Started on tiny PIC microcontrollers in Embedded C, survived Canadian winters (4.04 GPA!), now wrangles Go goroutines.",
-  "Embedded C traumatized Aswin into respecting every byte—good news for your backend memory bill.",
-  "Delhi → Chennai → Bangalore → London (Canada) → Kerala. Relocation? Pretty sure his suitcase stays half-packed.",
-  "Four Honour Rolls at Fanshawe College and still humble enough to document what went wrong in every README.",
-
-  // Coding style & personality
-  "Aswin codes in Neovim. Don't ask him how to exit Vim—he's been happily living inside it since last year.",
-  "Won Overall Best Performer at Brototype (June 2026). As his mascot, I'm taking at least 12% of the credit.",
-  "Fun fact: Aswin merged upstream Go PRs into CNCF's ORAS (oras-go). Yes, I frame that on my burrow wall.",
-  "Aswin's 3 rules: design before coding, instrument day one, and test failure paths before they page you at 3 AM.",
-  "Does NOT slap fake 'Live Demo' buttons on unfinished apps. Refreshingly honest engineering ahead!",
-  "Open to remote work OR relocation—plus hiring Aswin automatically includes one well-behaved Go Gopher.",
-  "Double-click anywhere if you want to toss me a snack. Go concurrency runs at peak throughput on peanuts! 🥜",
-  "Psst—try asking the AI assistant above tough architecture questions. It refuses to hallucinate outside his docs!",
+  "Aswin spent 3 years catching bank fraud at NatWest—now his software trusts nobody, in a good way.",
+  "Amazon safety rules taught Aswin to read every line of fine print. Now he teaches AI helpers to do the same.",
+  "Delhi → Chennai → Bangalore → Canada → Kerala. Safe to say relocation doesn't scare him one bit!",
+  "Survived freezing Canadian winters and still graduated on the Honour Roll (4.04 / 4.2 GPA).",
+  "Won Overall Best Performer in June 2026 at Brototype. As his mascot, I claim 10% of the trophy.",
+  "Fun plot twist: he went from tiny microchip hardware in Canada to building web backends in Kerala.",
+  "Aswin doesn't put fake 'Live Demo' buttons on unfinished apps. Refreshingly honest, right?",
+  "Need someone calm under pressure? Three years investigating fraud gives you nerves of steel.",
+  "Hiring Aswin means open to remote, open to relocating, AND you adopt a free mascot.",
+  "Psst! Try asking the AI chat at the top anything—it only answers real facts from his work.",
+  "Double-click anywhere on the screen if you want to toss me a snack. I run on peanuts! 🥜",
+  "Even his project notes admit what isn't built yet. Zero hype, 100% honest craft.",
 ];
 
-const ROUTE_QUIPS: { prefix: string; quips: string[] }[] = [
+// Occasional technical jokes for fellow developers (~20-25% chance)
+const TECH_JOKE_QUIPS = [
+  "Aswin writes Go in Neovim. Don't ask him how to quit Vim—he moved in permanently.",
+  "Most devs store money in float64 and hope for the best. 3 years of NatWest audits cured him of that.",
+  "He strips client X-Tenant-ID headers right at the door. Classic fraud-analyst paranoia.",
+  "Starting on tiny microchips in C made him deeply suspicious of every wasted byte of RAM.",
+  "Merged upstream Go PRs into CNCF's ORAS (oras-go). Yes, this Gopher still flexes about it.",
+  "His debugging motto: instrument on day one, fail closed, and always suspect concurrency first.",
+];
+
+const ROUTE_QUIPS: { prefix: string; simple: string[]; tech?: string[] }[] = [
   {
     prefix: '/projects/arda',
-    quips: [
-      "ARDA is basically TSA for AI agents: 10-step ToolGateway checks before any tool gets near production.",
-      "272 Go tests & 219 Python tests in ARDA—and his Human Review UI is still politely sitting in Pending.",
+    simple: [
+      "Think of ARDA as a polite security guard for AI assistants—checking every action before letting it run.",
+      "Why let an AI guess wildly when you can check past history and pause when unsure?",
+      "Even with hundreds of passing tests, the unfinished Human Review screen is honestly marked Pending.",
+    ],
+    tech: [
       "Caught a sneaky pgvector HNSW bug returning 0 rows on tenant filters. The vectors tried hiding; he found them.",
-      "Trust issues check: ARDA locks published agents with a SQL trigger AND stashes BYOK keys in Vault.",
     ],
   },
   {
     prefix: '/projects/evntx',
-    quips: [
-      "Two fans clicking the last concert seat at the exact same millisecond? EVNTX keeps calm with optimistic CAS.",
-      "If your Razorpay payment lands 1 second after EVNTX's 1-minute hold expires, it auto-refunds you. True manners.",
-      "Skipped Redis just for a 60s event cache and used a crisp sync.RWMutex instead. Peak pragmatic Go.",
-      "EVNTX encrypts organizer bank & UPI payouts with AES-256-GCM so nobody leaks sensitive details.",
+    simple: [
+      "Two concert fans clicking the last seat at once? EVNTX makes sure nobody gets double-booked.",
+      "Paid 1 second after your 1-minute ticket timer ran out? EVNTX automatically refunds you. Good manners built in!",
+      "Every ticket hold, refund, and organizer payout adds up cleanly—zero mystery math.",
+    ],
+    tech: [
+      "Skipped spinning up Redis just for a 60s event cache and used a crisp sync.RWMutex instead.",
     ],
   },
   {
     prefix: '/projects/tenome',
-    quips: [
-      "Tried running a 14B LLM on Minikube, watched RAM hit 100%, and gracefully downsized to qwen2.5:0.5b.",
-      "Four separate Go modules wired over gRPC & Kafka just to crawl sites and summarize them locally for $0.",
-      "Poisoned Kafka message incoming? tenome-notify parks it cleanly in a Dead Letter Topic and keeps humming.",
+    simple: [
+      "Tenome gathers web pages, lets you search them fast, and boils long articles down into short summaries.",
+      "Built to keep search snappy while an AI helper quietly summarizes pages in the background.",
+    ],
+    tech: [
+      "Tried running a giant 14B AI model on a small local cluster, watched RAM vanish, and hugged a tidy 0.5B model instead.",
     ],
   },
   {
     prefix: '/skills',
-    quips: [
-      "Decluttered these skill cards on purpose—less chest-thumping prose, more clean scanning for busy engineers.",
-      "Click any skill card! No walls of marketing fluff—just what Aswin actually built with it.",
+    simple: [
+      "Trimmed all the clutter from these cards so anyone can scan his toolkit in ten seconds.",
+      "Click any card! No buzzword bingo—just what Aswin actually built with it.",
     ],
   },
   {
     prefix: '/about',
-    quips: [
-      "NatWest fraud audits → Amazon SOPs → Canadian Embedded C → Go distributed systems. Now THAT'S a character arc.",
-      "Look at that timeline: every career turn somehow made him even more paranoid about correctness & edge cases.",
+    simple: [
+      "Banking → Compliance → Hardware in Canada → Software in India. Best career plot twist on the page.",
+      "Honour Roll grades, fraud audits, and Best Performer awards—turns out steady consistency wins.",
     ],
   },
   {
     prefix: '/contact',
-    quips: [
-      "Notice there's no mandatory phone trap or 12-step form here—just one clean click straight to his inbox.",
-      "Writing to aswinsreeraj96@gmail.com? Mention Go concurrency or payment edge cases for instant bonus points.",
+    simple: [
+      "No 10-step form or phone-spam trap—just one click straight to his email inbox.",
+      "Aswin checks aswinsreeraj96@gmail.com multiple times a day—zero message backlog here!",
     ],
   },
 ];
 
 const WAKE_QUIPS = [
-  "Who pinged /health?! I was right in the middle of a peaceful power nap!",
-  "Back online! 99.9% uptime—well, minus that cozy 10-second sleep.",
-  "Alert acknowledged! Ready for goroutines (and maybe a peanut).",
+  "Who tapped me?! I was right in the middle of a very productive nap!",
+  "Awake! Did someone say coffee, code, or peanuts?",
+  "Back online! Did I miss anything fun while snoozing?",
 ];
 
 const DROP_QUIPS = [
-  "Whew—circuit-breaker held mid-air! 10/10 graceful landing.",
-  "Zero dropped frames, slight panic in my whiskers!",
-  "Note to self: goroutines schedule faster than falling Gophers.",
+  "Whew—10/10 landing, slight panic in my whiskers!",
+  "Okay, back on solid ground—please tip a peanut next time!",
+  "Who needs a parachute when you've got sturdy Gopher knees?",
 ];
 
 function pickPersonalizedQuip(pathname: string, lastQuip: string | null): string {
   const matched = ROUTE_QUIPS.find((r) => pathname.startsWith(r.prefix));
-  const pool =
-    matched && Math.random() < 0.55
-      ? matched.quips
-      : matched
-      ? [...matched.quips, ...PROFILE_QUIPS]
-      : PROFILE_QUIPS;
+  const useTechJoke = Math.random() < 0.22;
+
+  let pool: string[];
+  if (useTechJoke) {
+    pool = matched?.tech ? [...matched.tech, ...TECH_JOKE_QUIPS] : TECH_JOKE_QUIPS;
+  } else if (matched && Math.random() < 0.55) {
+    pool = matched.simple;
+  } else {
+    pool = matched ? [...matched.simple, ...PROFILE_QUIPS] : PROFILE_QUIPS;
+  }
 
   const candidates = pool.filter((q) => q !== lastQuip);
   const source = candidates.length > 0 ? candidates : PROFILE_QUIPS;
