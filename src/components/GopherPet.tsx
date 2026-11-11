@@ -1,112 +1,94 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// Easy, witty, non-technical quips anyone can enjoy (~75-80% chance)
 const PROFILE_QUIPS = [
-  "Aswin spent 3 years catching bank fraud at NatWest—now his software trusts nobody, in a good way.",
-  "Amazon safety rules taught Aswin to read every line of fine print. Now he teaches AI helpers to do the same.",
-  "Delhi → Chennai → Bangalore → Canada → Kerala. Safe to say relocation doesn't scare him one bit!",
-  "Survived freezing Canadian winters and still graduated on the Honour Roll (4.04 / 4.2 GPA).",
-  "Won Overall Best Performer in June 2026 at Brototype. As his mascot, I claim 10% of the trophy.",
-  "Fun plot twist: he went from tiny microchip hardware in Canada to building web backends in Kerala.",
-  "Aswin doesn't put fake 'Live Demo' buttons on unfinished apps. Refreshingly honest, right?",
-  "Need someone calm under pressure? Three years investigating fraud gives you nerves of steel.",
-  "Hiring Aswin means open to remote, open to relocating, AND you adopt a free mascot.",
-  "Psst! Try asking the AI chat at the top anything—it only answers real facts from his work.",
-  "Double-click anywhere on the screen if you want to toss me a snack. I run on peanuts! 🥜",
-  "Even his project notes admit what isn't built yet. Zero hype, 100% honest craft.",
+  // Simple, witty & welcoming for everyone
+  "I'm officially Aswin's Chief Morale Gopher. Salary: unlimited virtual peanuts.",
+  "Aswin builds the behind-the-scenes engine of apps—basically the plumbing, minus the leaks!",
+  "Remote work or relocating? His suitcase practically stays half-packed by the door.",
+  "Aswin won Overall Best Performer at Brototype (June 2026). Naturally, I take half the credit.",
+  "Notice there are no fake '100% Expert' bars on this site? Refreshingly honest humans live here.",
+  "Fun fact: almost everything you click on this site shows real work—no empty placeholder fluff.",
+  "Hiring Aswin gets you reliable backend systems. Hiring me gets you free desk supervision.",
+  "Got a question about Aswin? Poke the chat widget above—that AI refuses to exaggerate!",
+  "Double-click anywhere on the screen if you feel like tossing me a snack! 🥜",
+  "Aswin likes designing ideas on paper first—fixing mistakes with an eraser is way cheaper.",
+  "Most portfolios feel like a static billboard; this one comes with a slightly spoiled mascot.",
+
+  // Occasional light tech jokes for developers
+  "Aswin writes Go all day, which means 40% logic and 60% typing 'if err != nil'.",
+  "Zero race conditions detected today—mostly because I sprinted across the footer first!",
+  "My favorite engineering feature? Graceful shutdown. Also applies to me when snacks run out.",
 ];
 
-// Occasional technical jokes for fellow developers (~20-25% chance)
-const TECH_JOKE_QUIPS = [
-  "Aswin writes Go in Neovim. Don't ask him how to quit Vim—he moved in permanently.",
-  "Most devs store money in float64 and hope for the best. 3 years of NatWest audits cured him of that.",
-  "He strips client X-Tenant-ID headers right at the door. Classic fraud-analyst paranoia.",
-  "Starting on tiny microchips in C made him deeply suspicious of every wasted byte of RAM.",
-  "Merged upstream Go PRs into CNCF's ORAS (oras-go). Yes, this Gopher still flexes about it.",
-  "His debugging motto: instrument on day one, fail closed, and always suspect concurrency first.",
-];
-
-const ROUTE_QUIPS: { prefix: string; simple: string[]; tech?: string[] }[] = [
+const ROUTE_QUIPS: { prefix: string; quips: string[] }[] = [
   {
     prefix: '/projects/arda',
-    simple: [
-      "Think of ARDA as a polite security guard for AI assistants—checking every action before letting it run.",
-      "Why let an AI guess wildly when you can check past history and pause when unsure?",
-      "Even with hundreds of passing tests, the unfinished Human Review screen is honestly marked Pending.",
-    ],
-    tech: [
-      "Caught a sneaky pgvector HNSW bug returning 0 rows on tenant filters. The vectors tried hiding; he found them.",
+    quips: [
+      "Think of ARDA like airport security for AI assistants—no unapproved moves allowed past the gate!",
+      "ARDA double-checks its own confidence before acting. Honestly, humans could try that too.",
+      "Parts of ARDA are still being built, and Aswin tells you straight up instead of faking a demo.",
     ],
   },
   {
     prefix: '/projects/evntx',
-    simple: [
-      "Two concert fans clicking the last seat at once? EVNTX makes sure nobody gets double-booked.",
-      "Paid 1 second after your 1-minute ticket timer ran out? EVNTX automatically refunds you. Good manners built in!",
-      "Every ticket hold, refund, and organizer payout adds up cleanly—zero mystery math.",
-    ],
-    tech: [
-      "Skipped spinning up Redis just for a 60s event cache and used a crisp sync.RWMutex instead.",
+    quips: [
+      "Two fans clicking the last concert ticket at the exact same second? EVNTX makes sure nobody double-books.",
+      "Paid a split second too late for a ticket hold? EVNTX automatically refunds you. Very polite code.",
+      "Built EVNTX so event organizers get tidy payouts without chaotic spreadsheet math.",
     ],
   },
   {
     prefix: '/projects/tenome',
-    simple: [
-      "Tenome gathers web pages, lets you search them fast, and boils long articles down into short summaries.",
-      "Built to keep search snappy while an AI helper quietly summarizes pages in the background.",
-    ],
-    tech: [
-      "Tried running a giant 14B AI model on a small local cluster, watched RAM vanish, and hugged a tidy 0.5B model instead.",
+    quips: [
+      "Tenome reads web pages fast, finds answers quickly, and shrinks long reads into bite-sized summaries.",
+      "Aswin once gave Tenome a giant AI model, watched it run out of memory, and smartly swapped in a smaller one.",
+      "Even if one task misbehaves in Tenome, the rest of the kitchen keeps cooking smoothly.",
     ],
   },
   {
     prefix: '/skills',
-    simple: [
-      "Trimmed all the clutter from these cards so anyone can scan his toolkit in ten seconds.",
-      "Click any card! No buzzword bingo—just what Aswin actually built with it.",
+    quips: [
+      "Zero buzzword bingo here—tap any skill card to see what Aswin actually built with it.",
+      "Kept these cards short on purpose! Nobody wants an essay just to scan a toolkit.",
     ],
   },
   {
     prefix: '/about',
-    simple: [
-      "Banking → Compliance → Hardware in Canada → Software in India. Best career plot twist on the page.",
-      "Honour Roll grades, fraud audits, and Best Performer awards—turns out steady consistency wins.",
+    quips: [
+      "Engineering started in Electronics before Aswin fell in love with building web backends—what a plot twist!",
+      "Have a scroll through the timeline—every chapter explains why he obsesses over things running smoothly.",
     ],
   },
   {
     prefix: '/contact',
-    simple: [
-      "No 10-step form or phone-spam trap—just one click straight to his email inbox.",
-      "Aswin checks aswinsreeraj96@gmail.com multiple times a day—zero message backlog here!",
+    quips: [
+      "No awkward 12-box contact form here—just one click straight to Aswin's inbox in Kerala.",
+      "Dropping an email to aswinsreeraj96@gmail.com? Don't be shy—he checks it multiple times a day!",
     ],
   },
 ];
 
 const WAKE_QUIPS = [
-  "Who tapped me?! I was right in the middle of a very productive nap!",
-  "Awake! Did someone say coffee, code, or peanuts?",
-  "Back online! Did I miss anything fun while snoozing?",
+  "Whoa—I was right in the middle of a dream about a mountain of cheese!",
+  "Hey! Five more minutes... okay fine, I'm awake, keep exploring!",
+  "Nap interrupted! Hope you brought a snack or an interesting question.",
 ];
 
 const DROP_QUIPS = [
-  "Whew—10/10 landing, slight panic in my whiskers!",
-  "Okay, back on solid ground—please tip a peanut next time!",
-  "Who needs a parachute when you've got sturdy Gopher knees?",
+  "Whew! Good thing Gophers come with built-in bounce suspension!",
+  "10/10 skydiving form—next time try double-clicking for snacks instead!",
+  "Safe landing! My whiskers barely even ruffled.",
 ];
 
 function pickPersonalizedQuip(pathname: string, lastQuip: string | null): string {
   const matched = ROUTE_QUIPS.find((r) => pathname.startsWith(r.prefix));
-  const useTechJoke = Math.random() < 0.22;
-
-  let pool: string[];
-  if (useTechJoke) {
-    pool = matched?.tech ? [...matched.tech, ...TECH_JOKE_QUIPS] : TECH_JOKE_QUIPS;
-  } else if (matched && Math.random() < 0.55) {
-    pool = matched.simple;
-  } else {
-    pool = matched ? [...matched.simple, ...PROFILE_QUIPS] : PROFILE_QUIPS;
-  }
+  const pool =
+    matched && Math.random() < 0.55
+      ? matched.quips
+      : matched
+      ? [...matched.quips, ...PROFILE_QUIPS]
+      : PROFILE_QUIPS;
 
   const candidates = pool.filter((q) => q !== lastQuip);
   const source = candidates.length > 0 ? candidates : PROFILE_QUIPS;
