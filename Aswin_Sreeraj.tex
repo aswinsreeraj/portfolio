@@ -1,0 +1,198 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[top=0.45in, bottom=0.45in, left=0.5in, right=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[none]{hyphenat}
+
+% Colors
+\definecolor{linkblue}{HTML}{0066CC}
+\definecolor{textdark}{HTML}{111111}
+\definecolor{mutedgray}{HTML}{555555}
+
+% Page layout settings
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.04}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\setlength{\emergencystretch}{2em}
+
+% Section Heading Format (ALL-CAPS, Bold 11pt, left-aligned, horizontal line underneath)
+\titleformat{\section}
+  {\fontsize{11}{13}\bfseries\uppercase}
+  {}
+  {0pt}
+  {}
+  [{\vspace{2.5pt}\titlerule[0.5pt]}]
+\titlespacing*{\section}{0pt}{5.5pt}{2.5pt}
+
+% Bullet List for Page 1 (comfortable spacing to fill page)
+\newlist{pageonelist}{itemize}{1}
+\setlist[pageonelist]{
+  leftmargin=1.2em,
+  label=\raisebox{0.18ex}{\scriptsize\textbullet},
+  itemsep=5.5pt,
+  parsep=1pt,
+  topsep=4.5pt,
+  partopsep=0pt,
+  before=\sloppy
+}
+
+% Bullet List for Page 2 (dense spacing to fit all content)
+\newlist{pagetwolist}{itemize}{1}
+\setlist[pagetwolist]{
+  leftmargin=1.2em,
+  label=\raisebox{0.18ex}{\scriptsize\textbullet},
+  itemsep=0.8pt,
+  parsep=0pt,
+  topsep=1.5pt,
+  partopsep=0pt,
+  before=\sloppy
+}
+
+\begin{document}
+\color{textdark}
+\linespread{1.14}\selectfont
+
+% ==================== HEADER BLOCK ====================
+\begin{center}
+  {\fontsize{20}{23}\selectfont\bfseries ASWIN SREERAJ}\\[4pt]
+  {\fontsize{10.5}{13}\selectfont\textbf{Backend \& Full-Stack Developer \enspace\textbullet\enspace Go \& Distributed Systems}}\\[4.5pt]
+  {\small
+    \faPhone*\enspace +91 8076629633
+    \enspace\textbar\enspace
+    \faEnvelope\enspace \href{mailto:aswinsreeraj96@gmail.com}{\color{linkblue}aswinsreeraj96@gmail.com}
+    \enspace\textbar\enspace
+    \faMapMarker*\enspace Kerala, India
+  }\\[3pt]
+  {\small
+    \faGithub\enspace \href{https://github.com/aswinsreeraj}{\color{linkblue}github.com/aswinsreeraj}
+    \enspace\textbar\enspace
+    \faLinkedin\enspace \href{https://linkedin.com/in/aswinsreeraj}{\color{linkblue}linkedin.com/in/aswinsreeraj}
+    \enspace\textbar\enspace
+    \faGlobe\enspace \href{https://aswinsreeraj.online/}{\color{linkblue}Portfolio}
+  }
+\end{center}
+\vspace{2pt}
+
+% ==================== EXECUTIVE SUMMARY ====================
+\vspace{5pt}\section*{Executive Summary}
+Backend Developer specializing in Go and Python, with experience building REST and gRPC APIs, distributed services, and database-backed applications. Strong focus on AI agent execution, tool governance, and reliability checking, along with concurrency control, payment and wallet transaction integrity, clean architecture, and durable workflows. Experienced across PostgreSQL, pgvector, Kafka/Redpanda, Temporal, Redis, and Docker, backed by over three years of financial reconciliation, fraud investigation, and compliance experience from NatWest Group and Amazon. Open to remote work or relocation.
+
+% ==================== TECHNICAL SKILLS ====================
+\vspace{8pt}\section*{Technical Skills}
+\begin{flushleft}
+\setlength{\parskip}{4.8pt}%
+\textbf{Languages:} Go (Primary), TypeScript, JavaScript, SQL, Python, Java, C++\\
+\textbf{Backend \& APIs:} Gin, GORM, REST APIs, GraphQL, gRPC, API Design, MCP\\
+\textbf{AI \& ML Systems:} Agentic AI Workflows, MCP (Model Context Protocol), LLM Orchestration (Hosted BYOK \& Ollama), Semantic Embeddings, kNN Vector Retrieval (pgvector HNSW), ML Evaluation \& Calibration (scikit-learn, Cross-Validation, ROC-AUC)\\
+\textbf{Architecture \& Design:} Clean Architecture, Microservices, Event-Driven Architecture, Distributed Systems, System Design, Concurrency, Optimistic Locking, Idempotency, State Machines, Caching, Repository Pattern, CQRS, Saga Pattern, Transactional Outbox Pattern\\
+\textbf{Databases \& Caching:} PostgreSQL, Redis, SQLite, MongoDB, Dragonfly, pgvector\\
+\textbf{Messaging \& Workflow Orchestration:} Apache Kafka, Redpanda, RabbitMQ, Temporal\\
+\textbf{Security \& Authentication:} JWT, RBAC, OAuth 2.0, HashiCorp Vault\\
+\textbf{Cloud \& DevOps:} AWS, Docker, Kubernetes, Linux, Nginx, CI/CD, GitHub Actions, Jenkins, SonarQube, Podman\\
+\textbf{Observability \& Monitoring:} OpenTelemetry, Prometheus, Grafana, Loki, Tempo\\
+\textbf{Frontend:} React, TypeScript, Zustand, TanStack Query\\
+\textbf{Developer Tools \& Fundamentals:} Git, GitHub, Neovim, Data Structures \& Algorithms
+\end{flushleft}
+
+% ==================== PROJECTS ====================
+\vspace{8pt}\section*{Projects}
+
+% --- ARDA ---
+\noindent\textbf{ARDA --- AI Agent Execution \& Governance Platform}\hfill\textit{In Progress} \enspace\textbar\enspace {\small\href{https://github.com/aswinsreeraj/arda}{\color{linkblue}GitHub} \enspace$\cdot$\enspace \href{https://github.com/aswinsreeraj/arda-reliability-service}{\color{linkblue}Reliability Service}}\\[3pt]
+\noindent\textit{Go, Python, PostgreSQL, pgvector, gRPC, Protocol Buffers, Temporal, Redpanda, Vault, MCP, Kubernetes}\\[4pt]
+A Go-based, multi-tenant platform for executing and governing configurable AI agents, with controlled tool access, durable workflows, reliability assessment, and human oversight.\vspace{2pt}
+\begin{pageonelist}
+  \item \textbf{Agent Configuration \& Runtime:} Built a shared Go runtime for configurable agents with versioned prompts, Draft-07 output schemas, tool permissions, and execution budgets, binding each execution to an immutable agent version and Vault BYOK credentials.
+  \item \textbf{Execution \& Tool Governance:} Implemented bounded multi-provider agent execution across 6 LLM adapters, strict structured-output validation, a 10-step Tool Gateway with deterministic guardrails, SHA-256 idempotency locking, SSRF checks, and read/write tool classification.
+  \item \textbf{Distributed Execution \& Access Control:} Designed synchronous and Temporal-based durable workflows, REST APIs, internal gRPC service communication, tenant-aware JWT access control, and 4-role RBAC permissions.
+  \item \textbf{Reliability Service:} Completed the hexagonal async Python reliability service with BAAI/\allowbreak{}bge-small-en-v1.5 narrative embeddings, tenant-scoped pgvector HNSW cosine retrieval (iterative\_scan = strict\_order), multiplicative scoring (Agreement $\times$ Density $\times$ Coverage) across a 6-stage fail-closed gate, and an HMAC-SHA-256-verified Redpanda feedback consumer with conflict quarantine and DLQ safety.
+  \item \textbf{Pending Components \& Readiness:} Core Go control plane and Python reliability services pass automated test suites (272 Go / 219 Python tests); dedicated Human Review service, web Frontend, transactional outbox publishing, and production Kubernetes/observability deployment remain pending.
+\end{pageonelist}
+
+\newpage
+\linespread{1.04}\selectfont
+
+% --- EVNTX ---
+\noindent\textbf{EVNTX --- Event Management \& Ticketing Platform}\hfill\textit{Completed} \enspace\textbar\enspace {\small\href{https://github.com/aswinsreeraj/evntx}{\color{linkblue}GitHub}}\\[1.5pt]
+\noindent\textit{Go, Gin, GORM, PostgreSQL, React, TypeScript, Zustand, TanStack Query, Docker, AWS EC2, Razorpay}\\[2.5pt]
+A full-stack event management and ticketing platform supporting event discovery, ticket bookings, Razorpay payments, wallet transactions, organizer payouts, engagement analytics, and administrative reporting, with a focus on concurrency control and financial transaction integrity.
+\begin{pagetwolist}
+  \item \textbf{Concurrency-Safe Booking:} Implemented optimistic concurrency control using version checks, conditional inventory updates, and conflict retries to handle competing ticket reservations.
+  \item \textbf{Transactional Wallet \& Ledger:} Built a multi-party wallet transaction system using PostgreSQL transactions and row-level locking to coordinate payments, credits, debits, refunds, organizer earnings, and payouts.
+  \item \textbf{Payment Verification \& Recovery:} Integrated Razorpay order creation and HMAC-SHA-256 signature verification, with recovery logic to initiate refunds when payment verification arrives after a booking reservation has expired.
+  \item \textbf{Lifecycle Management \& Background Jobs:} Modelled event, booking, payment, and payout lifecycles using explicit states, with scheduled jobs for reservation expiration, payout processing, and event completion.
+  \item \textbf{Architecture, Authentication \& Deployment:} Structured the Go backend using Clean Architecture and implemented JWT-based sessions, role-based access control (RBAC), email OTP authentication, and Google OAuth. Containerized the backend for deployment on AWS EC2.
+\end{pagetwolist}
+
+\vspace{3.5pt}
+
+% --- Tenome ---
+\noindent\textbf{Tenome --- Distributed Search \& Web Crawling Platform}\hfill\textit{Learning Project} \enspace\textbar\enspace {\small\href{https://github.com/aswinsreeraj/tenome-micro}{\color{linkblue}GitHub}}\\[1.5pt]
+\noindent\textit{Go, Gin, GraphQL, PostgreSQL, SQLite, Redis, Dragonfly, Kafka, Docker, GitHub Actions, Ollama}\\[2.5pt]
+A concurrent web crawler and search engine that evolved into separate search, AI-summarization, and notification services, built to learn concurrency and distributed design.
+\begin{pagetwolist}
+  \item \textbf{Crawling \& Indexing:} Go crawler fetches pages concurrently; an in-memory inverted index maps terms to documents so queries avoid full scans.
+  \item \textbf{Service Decoupling:} Kafka-based asynchronous events let the search, AI, and notification services evolve independently.
+  \item \textbf{APIs \& Tooling:} REST and GraphQL APIs, Ollama-powered page summarization, Docker-based development, and GitHub Actions CI.
+\end{pagetwolist}
+
+% ==================== OPEN-SOURCE CONTRIBUTIONS ====================
+\section*{Open-Source Contributions}
+\noindent\textbf{ORAS --- oras-go}\hfill{\small\href{https://github.com/oras-project/oras-go/pulls?q=is\%3Apr+state\%3Aclosed+author\%3Aaswinsreeraj}{\color{linkblue}PRs} \enspace$\cdot$\enspace \href{https://github.com/oras-project/oras-go}{\color{linkblue}GitHub}}
+\begin{pagetwolist}
+  \item \textbf{Upstream Contributions:} Contributed code, documentation, and tests to the Go implementation of the ORAS project; reviewed and merged upstream.
+\end{pagetwolist}
+
+% ==================== PROFESSIONAL EXPERIENCE ====================
+\section*{Professional Experience}
+
+\noindent\textbf{Amazon}\hfill\textit{Bangalore, India}\\[1.5pt]
+\noindent\textit{Senior Product Compliance Associate}\hfill\textit{Mar 2022 -- Dec 2022}
+\begin{pagetwolist}
+  \item \textbf{Compliance Risk Assessment:} Analysed product information against regulatory requirements, safety standards, and internal policies to identify compliance risks and determine appropriate actions.
+  \item \textbf{Cross-Functional Operations:} Collaborated with cross-functional teams to address regulatory issues, investigate potential product safety concerns, and maintain compliance with established procedures.
+\end{pagetwolist}
+
+\vspace{3.5pt}
+
+\noindent\textbf{NatWest Group}\hfill\textit{Chennai, India}\\[1.5pt]
+\noindent\textit{Operations Analyst}\hfill\textit{Jan 2019 -- Feb 2022}
+\begin{pagetwolist}
+  \item \textbf{Financial Account Reconciliation:} Reconciled financial accounts and transaction records, identifying discrepancies and ensuring accuracy, consistency, and compliance with internal policies.
+  \item \textbf{Fraud Investigation \& Audit:} Investigated chargebacks and potential fraud cases through transaction analysis, documenting findings and preparing audit reports to support risk assessment and fraud prevention.
+\end{pagetwolist}
+
+% ==================== EDUCATION & TRAINING ====================
+\section*{Education \& Training}
+
+\noindent\textbf{Software Engineering Program (Go \& Backend)}\hfill\textit{Aug 2025 -- Present}\\[1.5pt]
+\noindent\textit{Brototype}\hfill\textit{Kochi, Kerala}
+\begin{pagetwolist}
+  \item \textbf{Core Curriculum:} Project-based intensive training in Go, APIs, databases, Clean Architecture, microservices, system design, and CI/CD.
+  \item \textbf{Academic Distinction:} Overall Best Performer (Jun 2026) --- recognised for academic and technical performance and community contribution.
+\end{pagetwolist}
+
+\vspace{3.5pt}
+
+\noindent\textbf{Ontario College Graduate Certificate, Electronics \& Embedded Systems}\hfill\textit{Jan 2023 -- Aug 2024}\\[1.5pt]
+\noindent\textit{Fanshawe College}\hfill\textit{London, Canada}
+\begin{pagetwolist}
+  \item \textbf{Academic Honours:} President's Honour Roll; Dean's Honour Roll (four terms), GPA 4.04 / 4.2.
+\end{pagetwolist}
+
+\vspace{3.5pt}
+
+\noindent\textbf{B.Tech, Electronics \& Communication Engineering}\hfill\textit{Jul 2014 -- Jun 2018}\\[1.5pt]
+\noindent\textit{Guru Gobind Singh Indraprastha University}\hfill\textit{Delhi, India}
+
+\end{document}
