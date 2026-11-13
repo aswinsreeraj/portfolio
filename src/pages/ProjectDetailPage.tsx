@@ -81,7 +81,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onSelectTe
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0A171D] text-[#101820] dark:text-[#E6F4F8] transition-colors">
       <div className="flex flex-wrap gap-12 items-start py-12 px-5 sm:px-8 lg:px-16 max-w-[1440px] mx-auto w-full flex-1">
         {/* Left Sticky Index Sidebar matching reference */}
-        <aside className="w-full lg:w-[220px] flex-shrink-0 flex flex-col gap-5 sticky top-24">
+        <aside className="w-full lg:w-[220px] flex-shrink-0 flex flex-col gap-5 relative lg:sticky lg:top-24">
           <div className="font-mono font-medium text-[12px] tracking-wide text-[#4A5B66] dark:text-[#8DB1BE] flex items-center justify-between">
             <span>// nav.index</span>
             <span className="text-[11px] font-semibold text-[#00708C] dark:text-[#00ADD8]">
