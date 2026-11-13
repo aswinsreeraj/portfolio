@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendChatMessage, ChatMode, ChatSource } from '../services/chatApi';
+import { ChatMessageRenderer } from './ChatMessageRenderer';
 
 interface Message {
   id: string;
@@ -345,12 +346,7 @@ export const AskAboutMeModal: React.FC<AskAboutMeModalProps> = ({
                 </div>
               ) : (
                 <div className="self-start max-w-[92%] flex flex-col gap-2.5 px-4 py-3 bg-[#F3FAFD] dark:bg-[#0A171D] border border-[#D6E7EE] dark:border-[#1E3A47] rounded-[12px] rounded-tl-xs text-[14.5px] leading-relaxed text-[#101820] dark:text-[#E6F4F8] shadow-xs">
-                  <div className="whitespace-pre-line">
-                    {msg.text}
-                    {msg.isStreaming && (
-                      <span className="inline-block w-2 h-4 ml-1 bg-[#00ADD8] animate-pulse align-middle" />
-                    )}
-                  </div>
+                  <ChatMessageRenderer content={msg.text} isStreaming={msg.isStreaming} />
 
                   {/* Sources Badges */}
                   {msg.sources && msg.sources.length > 0 && !msg.isStreaming && (
