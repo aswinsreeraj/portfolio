@@ -54,7 +54,7 @@ export const HeroAskWidget: React.FC<HeroAskWidgetProps> = ({ onOpenFullChat }) 
 
       {/* Subtitle */}
       <p className="m-0 text-[15px] sm:text-[16px] text-[#4A5B66] dark:text-[#8DB1BE] mt-1.5 mb-5 leading-normal">
-        Hi. I am Aswin Sreeraj. Quick answers for recruiters, hiring managers &amp; tech leads.
+        Hi. I am Aswin Sreeraj. These are the questions that I am frequenlty asked.
       </p>
 
       {/* Questions Accordion */}
