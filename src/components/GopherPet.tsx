@@ -207,28 +207,6 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
     };
   }, []);
 
-  // Reset inactivity timer (35 seconds of total page inactivity -> sleep)
-  const resetInactivity = useCallback(() => {
-    if (inactivityTimerRef.current) {
-      window.clearTimeout(inactivityTimerRef.current);
-    }
-
-    if (isSleeping) {
-      setIsSleeping(false);
-      setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 200);
-    }
-
-    inactivityTimerRef.current = window.setTimeout(() => {
-      // Only sleep if not currently eating or walking to a snack
-      if (!isFeedingRef.current) {
-        setIsSleeping(true);
-        setIsWaddling(false);
-        setSpeechText(null);
-      }
-    }, 35000); // 35 seconds of inactivity -> peaceful nap
-  }, [isSleeping]);
-
   const sayMessage = useCallback((text: string, durationMs = 5000) => {
     lastQuipRef.current = text;
     setSpeechText(text);
@@ -240,20 +218,66 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
     }, durationMs);
   }, []);
 
+  const putToSleep = useCallback(() => {
+    setIsSleeping(true);
+    isSleepingRef.current = true;
+    setIsWaddling(false);
+    setIsPeeking(null);
+    if (speechTimerRef.current) window.clearTimeout(speechTimerRef.current);
+    if (inactivityTimerRef.current) window.clearTimeout(inactivityTimerRef.current);
+    setSpeechText(null);
+  }, []);
+
+  const wakeUp = useCallback(
+    (sayQuip = true) => {
+      setIsSleeping(false);
+      isSleepingRef.current = false;
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 200);
+
+      // Re-arm auto-sleep inactivity timer
+      if (inactivityTimerRef.current) window.clearTimeout(inactivityTimerRef.current);
+      inactivityTimerRef.current = window.setTimeout(() => {
+        if (!isFeedingRef.current && !isPickedUpRef.current && !isDroppingRef.current) {
+          putToSleep();
+        }
+      }, 45000);
+
+      if (sayQuip) {
+        const wakeLine = WAKE_QUIPS[Math.floor(Math.random() * WAKE_QUIPS.length)];
+        sayMessage(wakeLine, 3800);
+      }
+    },
+    [putToSleep, sayMessage]
+  );
+
+  // Reset inactivity timer (45 seconds of total page inactivity -> sleep)
+  const resetInactivity = useCallback(() => {
+    if (inactivityTimerRef.current) {
+      window.clearTimeout(inactivityTimerRef.current);
+    }
+
+    if (!isSleepingRef.current) {
+      inactivityTimerRef.current = window.setTimeout(() => {
+        if (!isFeedingRef.current && !isPickedUpRef.current && !isDroppingRef.current) {
+          putToSleep();
+        }
+      }, 45000); // 45 seconds of inactivity -> peaceful nap
+    }
+  }, [putToSleep]);
+
   // Safe trigger click for quick clicks (jump + speech bubble)
   const safeTriggerClick = useCallback(() => {
     const now = Date.now();
     if (now - lastClickTimeRef.current < 350) return;
     lastClickTimeRef.current = now;
 
-    resetInactivity();
-
     if (isSleepingRef.current) {
-      setIsSleeping(false);
-      const wakeLine = WAKE_QUIPS[Math.floor(Math.random() * WAKE_QUIPS.length)];
-      sayMessage(wakeLine, 3800);
+      wakeUp(true);
       return;
     }
+
+    resetInactivity();
 
     if (isPeekingRef.current) {
       const stepBack = isPeekingRef.current === 'left' ? 16 : 82;
@@ -270,7 +294,7 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
 
     // Pick a personalized witty quip (route-aware + non-repeating)
     sayMessage(pickPersonalizedQuip(pathname, lastQuipRef.current), 5200);
-  }, [pathname, resetInactivity, sayMessage]);
+  }, [pathname, resetInactivity, sayMessage, wakeUp]);
 
   // Execute drop physics with gravity acceleration down to baseline
   const executeDrop = useCallback(() => {
@@ -335,7 +359,9 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
   const handleGopherMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return; // Only primary mouse button
     e.preventDefault();
-    resetInactivity();
+    if (!isSleepingRef.current) {
+      resetInactivity();
+    }
     dragStartRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
     hasDraggedRef.current = false;
     lastDragPosRef.current = { x: e.clientX, y: e.clientY };
@@ -344,7 +370,9 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
   const handleGopherTouchStart = (e: React.TouchEvent) => {
     if (!e.touches[0]) return;
     const touch = e.touches[0];
-    resetInactivity();
+    if (!isSleepingRef.current) {
+      resetInactivity();
+    }
     dragStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
     hasDraggedRef.current = false;
     lastDragPosRef.current = { x: touch.clientX, y: touch.clientY };
@@ -355,7 +383,9 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
     if (isHidden) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      resetInactivity();
+      if (!isSleepingRef.current) {
+        resetInactivity();
+      }
 
       // Check if dragging Gopher
       if (dragStartRef.current) {
@@ -479,7 +509,9 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
     };
 
     const handleUserInteraction = () => {
-      resetInactivity();
+      if (!isSleepingRef.current) {
+        resetInactivity();
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -524,8 +556,11 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
         return;
       }
 
-      resetInactivity();
-      setIsSleeping(false);
+      if (isSleepingRef.current) {
+        wakeUp(false);
+      } else {
+        resetInactivity();
+      }
       setIsPeeking(null);
       if (peekTimerRef.current) window.clearTimeout(peekTimerRef.current);
 
@@ -586,7 +621,7 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
     return () => {
       window.removeEventListener('dblclick', handleGlobalDoubleClick);
     };
-  }, [posX, resetInactivity, isHidden]);
+  }, [posX, resetInactivity, isHidden, wakeUp]);
 
   // Periodic blinking (every 3.5 to 6 seconds)
   useEffect(() => {
@@ -981,14 +1016,16 @@ export const GopherPet: React.FC<GopherPetProps> = () => {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setIsSleeping(true);
-                setIsWaddling(false);
-                setSpeechText(null);
+                if (isSleeping) {
+                  wakeUp(true);
+                } else {
+                  putToSleep();
+                }
               }}
-              title="Put Gopher to sleep (quiet mode)"
+              title={isSleeping ? "Wake up Gopher" : "Put Gopher to sleep (quiet mode)"}
               className="px-1.5 py-0.5 text-[9px] font-mono bg-white/95 dark:bg-[#0E1F27]/95 text-gray-500 hover:text-[#00ADD8] dark:text-gray-400 border border-gray-200 dark:border-gray-700/80 rounded shadow-sm hover:shadow transition-colors"
             >
-              💤 sleep
+              {isSleeping ? '☀️ wake' : '💤 sleep'}
             </button>
             <button
               type="button"
