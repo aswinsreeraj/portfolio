@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ProjectData } from '../data/projects';
 
@@ -8,28 +8,88 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech }) => {
+  const cardRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
+  useEffect(() => {
+    // Detect touch / non-hover devices
+    const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const updateDeviceType = () => {
+      setIsTouchDevice(!hoverQuery.matches);
+    };
+    updateDeviceType();
+    hoverQuery.addEventListener?.('change', updateDeviceType);
+
+    if (!project.videoUrl) {
+      return () => {
+        hoverQuery.removeEventListener?.('change', updateDeviceType);
+      };
+    }
+
+    // On mobile / touch screens: Auto-play when card is scrolled into viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Only trigger viewport-based playback if the device has no hover capability
+          if (!hoverQuery.matches) {
+            const video = videoRef.current;
+            if (!video) return;
+
+            if (entry.isIntersecting) {
+              video
+                .play()
+                .then(() => setIsPlaying(true))
+                .catch(() => {});
+            } else {
+              video.pause();
+              video.currentTime = 0;
+              setIsPlaying(false);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Triggers when 50% of the project card is visible
+      }
+    );
+
+    const el = cardRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+      observer.disconnect();
+      hoverQuery.removeEventListener?.('change', updateDeviceType);
+    };
+  }, [project.videoUrl]);
+
+  // Desktop hover interactions
   const handleMouseEnter = () => {
-    setIsHovered(true);
+    if (isTouchDevice) return;
     const video = videoRef.current;
     if (video) {
-      video.play().catch(() => {});
+      video
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
     }
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    if (isTouchDevice) return;
     const video = videoRef.current;
     if (video) {
       video.pause();
       video.currentTime = 0;
+      setIsPlaying(false);
     }
   };
 
   return (
     <article
+      ref={cardRef}
       onMouseEnter={project.videoUrl ? handleMouseEnter : undefined}
       onMouseLeave={project.videoUrl ? handleMouseLeave : undefined}
       className="flex-1 min-w-[320px] max-w-full flex flex-col bg-white dark:bg-[#0E1F27] border border-[#C9DCE4] dark:border-[#1E3A47] rounded-[14px] overflow-hidden transition-all hover:border-[#00ADD8] dark:hover:border-[#00ADD8]"
@@ -83,7 +143,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech 
           <span className="truncate">{project.screenshotLabel}</span>
           {project.videoUrl && (
             <span className="inline-flex items-center gap-1.5 flex-shrink-0 text-[#00708C] dark:text-[#00ADD8]">
-              {isHovered ? (
+              {isPlaying ? (
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00ADD8] animate-pulse" />
                   playing
@@ -91,7 +151,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelectTech 
               ) : (
                 <>
                   <span aria-hidden="true">▶</span>
-                  hover
+                  {isTouchDevice ? 'preview' : 'hover'}
                 </>
               )}
             </span>
