@@ -32,9 +32,9 @@ const INTRO_QUESTIONS: IntroQuestion[] = [
       "ARDA tackles autonomous AI agent reliability in high-stakes domains through durable Temporal workflows, Vault BYOK credential custody, and deterministic pgvector guardrails. EVNTX solves ticket overselling, concurrency conflicts, and financial transaction integrity using optimistic locking, row-level locks, and multi-party escrow ledgers. Tenome Micro explores scalable distributed systems, decoupling concurrent web crawling, Kafka event streams, and local LLM summarization across gRPC services.",
   },
   {
-    question: "How do you collaborate with teams & what is your availability?",
+    question: "What is your availability and location preference?",
     answer:
-      "At NatWest Group and Amazon, I worked daily with legal, QA, operations, and audit teams—habits I carry into clear ADRs, API docs, honest gap tracking, and structured PR/code reviews. I adapt fast across stacks (from finance ops and low-level C to Go, async Python, and Kubernetes/Helm) and am immediately available for full-time Backend / Go Engineer roles (open to remote or relocation).",
+      "I am immediately available for full-time Backend Developer roles. I am based in Kerala, India, and fully open to remote opportunities worldwide as well as relocation for on-site or hybrid roles across major tech hubs (such as Bangalore, Hyderabad, Pune, and Delhi NCR) or internationally.",
   },
 ];
 
