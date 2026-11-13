@@ -21,20 +21,20 @@ const INTRO_QUESTIONS: IntroQuestion[] = [
       "I combine idiomatic Go architecture with enterprise audit and risk discipline. Across EVNTX, ARDA, and Tenome Micro, I built Clean Architecture REST/gRPC APIs, concurrency-safe locking (optimistic CAS + PostgreSQL FOR UPDATE wallets), bounded worker pools, fail-closed security gates (Vault KV v2, AES-256-GCM, HS256 JWT/RBAC, HMAC-SHA256 interop, SSRF guards), and durable event workflows (Temporal & Kafka/Redpanda). Backed by verifiable suites—272 Go tests & 219 Python tests in ARDA plus -race verification and pprof DB tuning in EVNTX.",
   },
   {
+    question: "What are your flagship projects and what real-world problems do they solve?",
+    answer:
+      "ARDA tackles autonomous AI agent reliability in high-stakes domains through durable Temporal workflows, Vault BYOK credential custody, and deterministic pgvector guardrails. EVNTX solves ticket overselling, concurrency conflicts, and financial transaction integrity using optimistic locking, row-level locks, and multi-party escrow ledgers. Tenome Micro explores scalable distributed systems, decoupling concurrent web crawling, Kafka event streams, and local LLM summarization across gRPC services.",
+  },
+  {
     question:
       "How does your background in banking operations and compliance influence how you build backends?",
     answer:
       "At NatWest Group and Amazon, I handled financial reconciliations, fraud investigations, and compliance SOPs. That experience taught me that in production, financial edge cases and silent data corruption are critical risks. As a backend engineer, I translate that discipline directly into code: designing failure recovery first, enforcing strict transactional consistency (optimistic locking and multi-party escrow ledgers in EVNTX), validating all inputs (Draft-07 schemas, Vault BYOK custody, and SSRF guardrails in ARDA), and ensuring every critical workflow is auditable, idempotent, and resilient against crashes.",
   },
   {
-    question: "What are your flagship projects and what real-world problems do they solve?",
+    question: "What is your current availability, and are you open to relocation or remote roles?",
     answer:
-      "ARDA tackles autonomous AI agent reliability in high-stakes domains through durable Temporal workflows, Vault BYOK credential custody, and deterministic pgvector guardrails. EVNTX solves ticket overselling, concurrency conflicts, and financial transaction integrity using optimistic locking, row-level locks, and multi-party escrow ledgers. Tenome Micro explores scalable distributed systems, decoupling concurrent web crawling, Kafka event streams, and local LLM summarization across gRPC services.",
-  },
-  {
-    question: "What is your availability and location preference?",
-    answer:
-      "I am immediately available for full-time Backend Developer roles. I am based in Kerala, India, and fully open to remote opportunities worldwide as well as relocation for on-site or hybrid roles across major tech hubs (such as Bangalore, Hyderabad, Pune, and Delhi NCR) or internationally.",
+      "I am immediately available to join full-time Backend Developer roles. Based in Kerala, India, I am fully open to remote opportunities globally, as well as relocation for on-site or hybrid positions across major tech hubs (such as Bangalore, Hyderabad, Pune, and Delhi NCR) or internationally.",
   },
 ];
 
