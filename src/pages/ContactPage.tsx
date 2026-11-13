@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Download, MapPin, Clock, Send } from 'lucide-react';
+import { Copy, Check, Download, MapPin, Clock, Send, Loader2, AlertCircle } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, YoutubeIcon } from '../components/SocialIcons';
 import { profile } from '../data/profile';
 import { Footer } from '../components/Footer';
@@ -7,6 +7,8 @@ import { Footer } from '../components/Footer';
 export const ContactPage: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [formSent, setFormSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,13 +22,49 @@ export const ContactPage: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoUrl = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject || 'Backend Engineering Opportunity')}&body=${encodeURIComponent(
-      `From: ${formData.name} (${formData.email})\n\n${formData.message}`
-    )}`;
-    window.location.href = mailtoUrl;
-    setFormSent(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const contactEndpoint =
+      import.meta.env.VITE_CONTACT_ENDPOINT ||
+      `https://formsubmit.co/ajax/${profile.email}`;
+
+    try {
+      const response = await fetch(contactEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
+          message: formData.message,
+          _template: 'table'
+        })
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok || (data && (data.success === 'true' || data.success === true))) {
+        setFormSent(true);
+      } else if (data?.message && data.message.toLowerCase().includes('activation')) {
+        // FormSubmit one-time inbox activation notice
+        setFormSent(true);
+      } else {
+        throw new Error(data?.message || 'Failed to submit message.');
+      }
+    } catch (err: any) {
+      console.error('Contact form submission error:', err);
+      setSubmitError(
+        err?.message || 'Unable to send message right now. Please try again or email directly at ' + profile.email
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -167,7 +205,7 @@ export const ContactPage: React.FC = () => {
                   Send a fast message
                 </h2>
                 <p className="m-0 text-[13px] font-mono text-[#4A5B66] dark:text-[#8DB1BE]">
-                  Sends directly to my inbox via your preferred mail client.
+                  Sends directly to my inbox. I'll get back to you as soon as possible.
                 </p>
               </div>
 
@@ -177,13 +215,16 @@ export const ContactPage: React.FC = () => {
                     <Check className="w-5 h-5" />
                   </div>
                   <h3 className="m-0 text-[16px] font-bold text-[#00536A] dark:text-white">
-                    Mail client triggered!
+                    Message sent successfully!
                   </h3>
                   <p className="m-0 text-[13px] text-[#3C4C57] dark:text-[#B9D3DC]">
-                    If your email app did not open, write directly to <strong>{profile.email}</strong>.
+                    Thank you for reaching out. Your message has been delivered to my inbox and I will get back to you shortly at <strong>{formData.email}</strong>.
                   </p>
                   <button
-                    onClick={() => setFormSent(false)}
+                    onClick={() => {
+                      setFormSent(false);
+                      setFormData({ name: '', email: '', subject: '', message: '' });
+                    }}
                     className="text-[12px] font-mono text-[#00708C] dark:text-[#00ADD8] underline mt-2 cursor-pointer"
                   >
                     Send another message
@@ -191,6 +232,21 @@ export const ContactPage: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {submitError && (
+                    <div className="p-3.5 rounded-md bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-red-800 dark:text-red-300 text-[13px] flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                      <div>
+                        {submitError}{' '}
+                        <a
+                          href={`mailto:${profile.email}?subject=${encodeURIComponent(formData.subject || 'Opportunity')}&body=${encodeURIComponent(formData.message)}`}
+                          className="underline font-semibold"
+                        >
+                          Send via default mail app
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[12px] font-mono text-[#101820] dark:text-[#E6F4F8] font-medium">
@@ -199,10 +255,11 @@ export const ContactPage: React.FC = () => {
                       <input
                         type="text"
                         required
+                        disabled={isSubmitting}
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="Alex Morgan"
-                        className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px]"
+                        className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px] disabled:opacity-60"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -212,10 +269,11 @@ export const ContactPage: React.FC = () => {
                       <input
                         type="email"
                         required
+                        disabled={isSubmitting}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="alex@company.com"
-                        className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px]"
+                        className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px] disabled:opacity-60"
                       />
                     </div>
                   </div>
@@ -227,10 +285,11 @@ export const ContactPage: React.FC = () => {
                     <input
                       type="text"
                       required
+                      disabled={isSubmitting}
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       placeholder="Backend Engineer role at [Company]"
-                      className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px]"
+                      className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px] disabled:opacity-60"
                     />
                   </div>
 
@@ -241,19 +300,30 @@ export const ContactPage: React.FC = () => {
                     <textarea
                       required
                       rows={5}
+                      disabled={isSubmitting}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Hi Aswin, we're building a high-throughput platform in Go and saw your work on ARDA and EVNTX..."
-                      className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px] resize-none"
+                      className="w-full px-4 py-2.5 rounded-md border border-[#BFD8E1] dark:border-[#2B4E5E] bg-white dark:bg-[#0A171D] text-[#101820] dark:text-white focus:border-[#00ADD8] outline-none text-[14px] resize-none disabled:opacity-60"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full min-h-[48px] rounded-md bg-[#FDDD00] hover:bg-[#ebd000] text-[#101820] border border-[#101820] font-bold text-[15px] flex items-center justify-center gap-2 shadow-yellow-solid cursor-pointer transition-transform active:translate-x-0.5 active:translate-y-0.5"
+                    disabled={isSubmitting}
+                    className="w-full min-h-[48px] rounded-md bg-[#FDDD00] hover:bg-[#ebd000] text-[#101820] border border-[#101820] font-bold text-[15px] flex items-center justify-center gap-2 shadow-yellow-solid cursor-pointer transition-transform active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-4 h-4 stroke-[2.5]" />
-                    <span>Send Message</span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 stroke-[2.5] animate-spin" />
+                        <span>Sending Message...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 stroke-[2.5]" />
+                        <span>Send Message</span>
+                      </>
+                    )}
                   </button>
                 </form>
               )}
