@@ -294,3 +294,4 @@ export const ChatMessageRenderer: React.FC<ChatMessageRendererProps> = ({
     </div>
   );
 };
+
