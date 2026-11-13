@@ -31,7 +31,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     'Kubernetes',
     'gRPC',
     'Python',
-    'AWS'
+    'AWS',
+    'OpenTelemetry',
+    'pgvector',
+    'Gin',
+    'GraphQL',
+    'Vault'
   ];
 
   return (
