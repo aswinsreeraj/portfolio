@@ -33,10 +33,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     'Python',
     'AWS',
     'OpenTelemetry',
-    'pgvector',
     'Gin',
-    'GraphQL',
-    'Vault'
+    'AWS',
+    'MCP',
+    'React',
+    'Grafana'
   ];
 
   return (
@@ -73,84 +74,84 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </a>
             </div>
 
-              {/* Social Profile Links (Icon outlines, no button box, scales up on hover) */}
-              <div className="flex items-center gap-5 pt-0.5">
-                {profile.linkedin && (
-                  <a
-                    href={profile.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn"
-                    title="LinkedIn"
-                    className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
-                  >
-                    <LinkedinOutlineIcon className="w-6 h-6" />
-                  </a>
-                )}
-                {profile.github && (
-                  <a
-                    href={profile.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub"
-                    title="GitHub"
-                    className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
-                  >
-                    <GithubOutlineIcon className="w-6 h-6" />
-                  </a>
-                )}
-                {profile.youtube && (
-                  <a
-                    href={profile.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="YouTube"
-                    title="YouTube"
-                    className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
-                  >
-                    <YoutubeOutlineIcon className="w-6 h-6" />
-                  </a>
-                )}
-                {profile.email && (
-                  <a
-                    href={`mailto:${profile.email}`}
-                    aria-label="Email"
-                    title="Email"
-                    className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
-                  >
-                    <Mail className="w-6 h-6" strokeWidth={1.8} />
-                  </a>
-                )}
-              </div>
-
-              {/* Works with pills */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 text-[14px]">
-                <span className="text-[#4A5B66] dark:text-[#8DB1BE] mr-1">Works with</span>
-                <button
-                  type="button"
-                  onClick={() => onSelectTech('Go')}
-                  className="font-mono font-medium text-[12px] px-2.5 py-1 rounded-full border border-[#00ADD8] bg-[#E1F6FB] dark:bg-[#16303B] text-[#00536A] dark:text-[#00ADD8] cursor-pointer"
+            {/* Social Profile Links (Icon outlines, no button box, scales up on hover) */}
+            <div className="flex items-center gap-5 pt-0.5">
+              {profile.linkedin && (
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  title="LinkedIn"
+                  className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
                 >
-                  Go
-                </button>
-                {heroTechnologies.map((tech) => (
-                  <button
-                    key={tech}
-                    type="button"
-                    onClick={() => onSelectTech(tech)}
-                    className="font-mono font-medium text-[12px] px-2.5 py-1 rounded-full border border-[#C9DCE4] dark:border-[#1E3A47] bg-white dark:bg-[#0A171D] text-[#00536A] dark:text-[#8DB1BE] hover:border-[#00ADD8] cursor-pointer transition-colors"
-                  >
-                    {tech}
-                  </button>
-                ))}
-              </div>
+                  <LinkedinOutlineIcon className="w-6 h-6" />
+                </a>
+              )}
+              {profile.github && (
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                  title="GitHub"
+                  className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
+                >
+                  <GithubOutlineIcon className="w-6 h-6" />
+                </a>
+              )}
+              {profile.youtube && (
+                <a
+                  href={profile.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  title="YouTube"
+                  className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
+                >
+                  <YoutubeOutlineIcon className="w-6 h-6" />
+                </a>
+              )}
+              {profile.email && (
+                <a
+                  href={`mailto:${profile.email}`}
+                  aria-label="Email"
+                  title="Email"
+                  className="text-[#3C4C57] dark:text-[#B9D3DC] hover:text-[#00ADD8] dark:hover:text-[#00ADD8] transition-all duration-200 ease-out transform hover:scale-125 focus:outline-none focus-visible:text-[#00ADD8]"
+                >
+                  <Mail className="w-6 h-6" strokeWidth={1.8} />
+                </a>
+              )}
             </div>
 
-            {/* Right Column: Interactive Ask Widget */}
-            <div className="lg:col-span-6">
-              <HeroAskWidget onOpenFullChat={onOpenAskModal} />
+            {/* Works with pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-[14px]">
+              <span className="text-[#4A5B66] dark:text-[#8DB1BE] mr-1">Works with</span>
+              <button
+                type="button"
+                onClick={() => onSelectTech('Go')}
+                className="font-mono font-medium text-[12px] px-2.5 py-1 rounded-full border border-[#00ADD8] bg-[#E1F6FB] dark:bg-[#16303B] text-[#00536A] dark:text-[#00ADD8] cursor-pointer"
+              >
+                Go
+              </button>
+              {heroTechnologies.map((tech) => (
+                <button
+                  key={tech}
+                  type="button"
+                  onClick={() => onSelectTech(tech)}
+                  className="font-mono font-medium text-[12px] px-2.5 py-1 rounded-full border border-[#C9DCE4] dark:border-[#1E3A47] bg-white dark:bg-[#0A171D] text-[#00536A] dark:text-[#8DB1BE] hover:border-[#00ADD8] cursor-pointer transition-colors"
+                >
+                  {tech}
+                </button>
+              ))}
             </div>
           </div>
+
+          {/* Right Column: Interactive Ask Widget */}
+          <div className="lg:col-span-6">
+            <HeroAskWidget onOpenFullChat={onOpenAskModal} />
+          </div>
+        </div>
       </section>
 
       {/* Selected Work Section matching landing.html */}
