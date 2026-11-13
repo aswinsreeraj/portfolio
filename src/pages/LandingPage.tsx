@@ -22,7 +22,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenAskModal,
   onSelectTech
 }) => {
-  const heroTechnologies = ['PostgreSQL', 'Redis', 'Kafka', 'Temporal', 'Docker'];
+  const heroTechnologies = [
+    'PostgreSQL',
+    'Redis',
+    'Kafka',
+    'Temporal',
+    'Docker',
+    'Kubernetes',
+    'gRPC',
+    'Python',
+    'AWS'
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0A171D] text-[#101820] dark:text-[#E6F4F8] transition-colors">

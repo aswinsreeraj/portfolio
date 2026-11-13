@@ -21,14 +21,15 @@ const INTRO_QUESTIONS: IntroQuestion[] = [
       "I combine idiomatic Go architecture with enterprise audit and risk discipline. Across EVNTX, ARDA, and Tenome Micro, I built Clean Architecture REST/gRPC APIs, concurrency-safe locking (optimistic CAS + PostgreSQL FOR UPDATE wallets), bounded worker pools, fail-closed security gates (Vault KV v2, AES-256-GCM, HS256 JWT/RBAC, HMAC-SHA256 interop, SSRF guards), and durable event workflows (Temporal & Kafka/Redpanda). Backed by verifiable suites—272 Go tests & 219 Python tests in ARDA plus -race verification and pprof DB tuning in EVNTX.",
   },
   {
-    question: "How do you handle concurrency, failures & production bugs?",
+    question:
+      "How does your background in banking operations and compliance influence how you build backends?",
     answer:
-      "I design failure recovery first. In EVNTX, I eliminated ticket overselling via 3-attempt optimistic CAS + FOR UPDATE row locks and handled late Razorpay captures past the 1-minute hold by automatically triggering source refunds with reserve_balance tracking. In Tenome Micro, I isolated slow Ollama inference behind bounded 100-slot crawl channels, Kafka claim-checks, jittered backoff, and DLTs. In ARDA, I debugged silent 0% recall multi-tenant pgvector HNSW scans (iterative_scan = strict_order) and resolved cross-language Go/Python HMAC canonicalization mismatches.",
+      "At NatWest Group and Amazon, I handled financial reconciliations, fraud investigations, and compliance SOPs. That experience taught me that in production, financial edge cases and silent data corruption are critical risks. As a backend engineer, I translate that discipline directly into code: designing failure recovery first, enforcing strict transactional consistency (optimistic locking and multi-party escrow ledgers in EVNTX), validating all inputs (Draft-07 schemas, Vault BYOK custody, and SSRF guardrails in ARDA), and ensuring every critical workflow is auditable, idempotent, and resilient against crashes.",
   },
   {
-    question: "How did you build your projects—and where should I start?",
+    question: "What are your flagship projects and what real-world problems do they solve?",
     answer:
-      "Each system isolates domain logic behind clean interfaces and explicit trade-offs. Start with ARDA for multi-tenant AI governance (Go Gateway/Registry, Temporal durable workflows, Vault BYOK, 10-step MCP ToolGateway, and Python pgvector HNSW gating)—or inspect EVNTX (Go Clean Architecture + React/TS) for transactional ticketing, escrow ledgers, and Razorpay flows. Tenome Micro demonstrates 4 Go modules bridged by gRPC, Kafka, Dragonfly cache, local Ollama, and full OpenTelemetry tracing.",
+      "ARDA tackles autonomous AI agent reliability in high-stakes domains through durable Temporal workflows, Vault BYOK credential custody, and deterministic pgvector guardrails. EVNTX solves ticket overselling, concurrency conflicts, and financial transaction integrity using optimistic locking, row-level locks, and multi-party escrow ledgers. Tenome Micro explores scalable distributed systems, decoupling concurrent web crawling, Kafka event streams, and local LLM summarization across gRPC services.",
   },
   {
     question: "How do you collaborate with teams & what is your availability?",
